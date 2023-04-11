@@ -33,9 +33,9 @@ onGround = True
 onPlatform = False
 
 # block2 = pygame.Surface((100, 100))
-manstand = pygame.image.load('c_stand.png')
-manjump = pygame.image.load('c_jump.png')
-manr = pygame.image.load('c_walk.png')
+manstand = pygame.image.load('c1_stand.png')
+manjump = pygame.image.load('c1_jump.png')
+manr = pygame.image.load('c1_walk.png')
 manl = manr.copy()
 manl = pygame.transform.flip(manl, True, False)
 
