@@ -44,9 +44,22 @@ manrect = manr.get_rect()
 manrect.bottom = 1050
 manrect.left = 50
 
+
+manstand2 = pygame.image.load('c1_stand.png')
+manjump2 = pygame.image.load('c1_jump.png')
+manr2 = pygame.image.load('c1_walk.png')
+manl2 = manr2.copy()
+manl2 = pygame.transform.flip(manl, True, False)
+
+man2 = manstand2
+manrect2 = manr2.get_rect()
+manrect2.bottom = 1050
+manrect2.left = 1800
+
 platform = pygame.image.load('кирпич шоколадка small.png')
 
 c = pygame.font.Font(None, 60)
+c2 = pygame.font.Font(None, 100)
 
 coinblock = pygame.image.load('f2.png')
 # platform = pygame.Surface((250, 100))
@@ -104,7 +117,7 @@ while 1:
         if event.type == pygame.QUIT:
             sys.exit()
         if event.type == pygame.KEYDOWN:
-            if not jump and event.key == pygame.K_SPACE:
+            if not jump and event.key == pygame.K_UP and pygame.KSCAN_W:
                 jump = True
                 jumpCount = jumpMax
                 onGround = False
@@ -152,7 +165,38 @@ while 1:
         manrect.bottom = HEIGHT
         onGround = True
         jump = False
+ 
 
+
+
+    if keys[pygame.K_LEFT]:
+        changeX = -1 * SPEED
+        man = manl
+
+    if keys[pygame.K_RIGHT]:
+        changeX = SPEED
+        man = manr
+
+    if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+        changeX = 0
+        man = manstand
+
+    if jump:
+        manrect.y -= jumpCount
+        man = manjump
+
+    if jumpCount > -jumpMax or (manrect.bottom < HEIGHT and onGround == False):
+        jumpCount -= 1
+        man = manjump
+    
+    else:
+        jump = False
+        onGround = True
+
+    if manrect.bottom > HEIGHT:
+        manrect.bottom = HEIGHT
+        onGround = True
+        jump = False
 
     if keys[pygame.K_ESCAPE]:
         break
@@ -207,6 +251,7 @@ while 1:
 
     # рисуем змею
     mainScreen.blit(man, manrect)
+    mainScreen.blit(man2, manrect2)
 
     #создание ректа блока еды
     if len(coins) == 0:
@@ -221,6 +266,16 @@ while 1:
     #проверка столкновения блока еды и змеи
     for i in range(len(coins)):
         if manrect.colliderect(coins[i]) == True:
+            #foods = [ ]
+            coins.pop(i)
+            score += 1
+            print("Количество набранных очков: " + str(score))
+            break
+        if score == 10:
+            jumpMax = 30
+    
+    for i in range(len(coins)):
+        if manrect2.colliderect(coins[i]) == True:
             #foods = [ ]
             coins.pop(i)
             score += 1
