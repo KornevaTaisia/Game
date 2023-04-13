@@ -13,6 +13,7 @@ RED = (255, 0, 0)
 
 SPEED = 10
 changeX = 0
+changeX2 = 0
 
 # настройки главного экрана
 WIDTH = 1920
@@ -31,6 +32,11 @@ jumpCount = 0
 jumpMax = 25
 onGround = True
 onPlatform = False
+jump2 = False
+jumpCount2 = 0
+jumpMax2= 25
+onGround2 = True
+onPlatform2 = False
 
 # block2 = pygame.Surface((100, 100))
 manstand = pygame.image.load('c1_stand.png')
@@ -54,7 +60,7 @@ manl2 = pygame.transform.flip(manl, True, False)
 man2 = manstand2
 manrect2 = manr2.get_rect()
 manrect2.bottom = 1050
-manrect2.left = 1800
+manrect2.left = 1000
 
 platform = pygame.image.load('кирпич шоколадка small.png')
 
@@ -68,9 +74,8 @@ coin = coinblock
 coins = [ ]
 
 # массив rect'ов для еды
-platforms = [
-    # platform.get_rect(left = 0, bottom = HEIGHT - 200)
-]
+platforms = []
+platforms2 = []
 
 map =  [
     '****************************************************************',
@@ -117,11 +122,17 @@ while 1:
         if event.type == pygame.QUIT:
             sys.exit()
         if event.type == pygame.KEYDOWN:
-            if not jump and event.key == pygame.K_UP and pygame.KSCAN_W:
+            if not jump and event.key == pygame.K_UP:
                 jump = True
                 jumpCount = jumpMax
-                onGround = False
+                onGround = False 
                 onPlatform = False
+
+            if not jump2 and event.key == pygame.K_w:
+                jump2 = True
+                jumpCount2 = jumpMax2
+                onGround2 = False 
+                onPlatform2 = False    
 
     platforms = []
 
@@ -135,6 +146,7 @@ while 1:
                 mainScreen.blit(platform, platformrect)
 
     manrect_old = manrect.copy()
+    manrect_old2 = manrect2.copy()
 
     keys = pygame.key.get_pressed()
 
@@ -169,39 +181,40 @@ while 1:
 
 
 
-    if keys[pygame.K_LEFT]:
-        changeX = -1 * SPEED
-        man = manl
+    if keys[pygame.K_a]:
+        changeX2 = -1 * SPEED
+        man2 = manl2
 
-    if keys[pygame.K_RIGHT]:
-        changeX = SPEED
-        man = manr
+    if keys[pygame.K_d]:
+        changeX2 = SPEED
+        man2 = manr2
 
-    if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
-        changeX = 0
-        man = manstand
+    if not keys[pygame.K_a] and not keys[pygame.K_d]:
+        changeX2 = 0
+        man2 = manstand2
 
-    if jump:
-        manrect.y -= jumpCount
-        man = manjump
+    if jump2:
+        manrect2.y -= jumpCount2
+        man2 = manjump2
 
-    if jumpCount > -jumpMax or (manrect.bottom < HEIGHT and onGround == False):
-        jumpCount -= 1
-        man = manjump
+    if jumpCount2 > -jumpMax2 or (manrect2.bottom < HEIGHT and onGround2 == False):
+        jumpCount2 -= 1
+        man2 = manjump2
     
     else:
-        jump = False
-        onGround = True
+        jump2 = False
+        onGround2 = True
 
-    if manrect.bottom > HEIGHT:
-        manrect.bottom = HEIGHT
-        onGround = True
-        jump = False
+    if manrect2.bottom > HEIGHT:
+        manrect2.bottom = HEIGHT
+        onGround2 = True
+        jump2 = False
 
     if keys[pygame.K_ESCAPE]:
         break
 
     manrect.x += changeX
+    manrect2.x += changeX2
 
     # проверка столкновения блока еды и змеи
     for platformrect in platforms:
@@ -242,6 +255,46 @@ while 1:
             onGround = False
             onPlatform = False
 
+    
+    for platformrect in platforms:
+        if manrect2.colliderect(platformrect) == True:
+            # движемся налево
+            if manrect2.left < manrect_old2.left:
+                manrect2.x -= changeX2
+                # manrect.left = platformrect.right
+
+            # движемся направо
+            if manrect2.right > manrect_old2.right:
+                manrect2.x -= changeX2
+                # manrect.left = platformrect.right
+
+        if manrect2.colliderect(platformrect) == True:
+            if manrect2.top < manrect_old2.top:
+                jump2 = True
+                onGround2 = False
+                onPlatform2 = False
+                jumpCount2 = -1
+                manrect2.top = platformrect.bottom
+            
+            # движемся вниз
+            if manrect2.bottom > manrect_old2.bottom:
+                jump2 = False
+                onGround2 = True
+                onPlatform2 = True
+                manrect2.bottom = platformrect.top
+
+    # Проверка падаем с платформы, потому что вышли с неё
+    if onPlatform2 == True:
+        manrect2_next = manrect2.copy()
+        manrect2_next.y += 1
+
+        if manrect2_next.collidelist(platforms) == -1:
+            jump2 = True
+            jumpCount2 = -1
+            onGround2 = False
+            onPlatform2 = False
+    
+    
     # заливаем главный фон черным цветом
     mainScreen.fill(mainScreenColor)
 
