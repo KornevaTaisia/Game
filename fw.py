@@ -3,6 +3,7 @@ import random
 pygame.init()
 
 score = 0
+score2 = 0
 
 # цвета
 BLACK = (0, 0, 0)
@@ -19,7 +20,7 @@ changeX2 = 0
 WIDTH = 1920
 HEIGHT = 1080
 mainScreen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
-mainScreenColor = WHITE
+mainScreenColor = pygame.image.load("fon.png")
 pygame.display.set_caption("Моя игра")
 
 # число кадров в секунду
@@ -55,12 +56,12 @@ manstand2 = pygame.image.load('c1_stand.png')
 manjump2 = pygame.image.load('c1_jump.png')
 manr2 = pygame.image.load('c1_walk.png')
 manl2 = manr2.copy()
-manl2 = pygame.transform.flip(manl, True, False)
+manl2 = pygame.transform.flip(manl2, True, False)
 
 man2 = manstand2
 manrect2 = manr2.get_rect()
 manrect2.bottom = 1050
-manrect2.left = 1000
+manrect2.left = 1600
 
 platform = pygame.image.load('кирпич шоколадка small.png')
 
@@ -68,10 +69,13 @@ c = pygame.font.Font(None, 60)
 c2 = pygame.font.Font(None, 100)
 
 coinblock = pygame.image.load('f2.png')
+coinblock2 = pygame.image.load('f2.png')
 # platform = pygame.Surface((250, 100))
 coin = coinblock
+coin2 = coinblock2
 # массив rect'ов для еды
 coins = [ ]
+coins2 = [ ]
 
 # массив rect'ов для еды
 platforms = []
@@ -135,6 +139,11 @@ while 1:
                 onPlatform2 = False    
 
     platforms = []
+    
+    
+    # заливаем главный фон черным цветом
+    mainScreen.fill(WHITE)
+    # mainScreen.blit(mainScreenColor, (0,0))
 
     for i in range(len(map)):
         for j in range(len(map[i])):
@@ -293,12 +302,8 @@ while 1:
             jumpCount2 = -1
             onGround2 = False
             onPlatform2 = False
-    
-    
-    # заливаем главный фон черным цветом
-    mainScreen.fill(mainScreenColor)
 
-    # рисуем блок еды
+    # рисуем блок
     for platformrect in platforms:
         mainScreen.blit(platform, platformrect)
 
@@ -310,8 +315,13 @@ while 1:
     if len(coins) == 0:
         for i in range(10):
             coinrect = coinblock.get_rect()
-            coinrect.centerx = random.randint(50, WIDTH-50)
-            coinrect.centery = random.randint(50, HEIGHT-50)
+            while True:
+                coinrect.centerx = random.randint(50, WIDTH-50)
+                coinrect.centery = random.randint(50, HEIGHT-50)
+                if coinrect.collidelist(platforms) == -1:
+                    break
+                else:
+                    print("Рыба в блоке")
             coins.append(coinrect)
                    
             
@@ -320,22 +330,23 @@ while 1:
     for i in range(len(coins)):
         if manrect.colliderect(coins[i]) == True:
             #foods = [ ]
+
             coins.pop(i)
             score += 1
             print("Количество набранных очков: " + str(score))
             break
         if score == 10:
-            jumpMax = 30
+            jumpMax == 30
     
     for i in range(len(coins)):
         if manrect2.colliderect(coins[i]) == True:
             #foods = [ ]
             coins.pop(i)
-            score += 1
-            print("Количество набранных очков: " + str(score))
+            score2 += 1
+            print("Количество набранных очков: " + str(score2))
             break
-        if score == 10:
-            jumpMax = 30
+        if score2 == 10:
+            jumpMax == 30
     
     #рисуем блок еды
     for coinrect in coins: 
@@ -345,6 +356,10 @@ while 1:
     mainScreen.blit(man, manrect)
     sc_text = c.render('Собрано рыбок: ' + str(score), 1, RED)
     mainScreen.blit(sc_text, (0,0))
+
+    mainScreen.blit(man2, manrect2)
+    sc_text = c.render('Собрано рыбок: ' + str(score2), 1, RED)
+    mainScreen.blit(sc_text, (1500,0))
 
     pygame.display.flip()
     clock.tick(FPS)
