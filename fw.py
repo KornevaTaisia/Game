@@ -20,7 +20,7 @@ changeX2 = 0
 WIDTH = 1920
 HEIGHT = 1080
 mainScreen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
-mainScreenColor = pygame.image.load("fon.png")
+mainScreenColor = pygame.image.load("fon2.png")
 pygame.display.set_caption("Моя игра")
 
 # число кадров в секунду
@@ -142,8 +142,8 @@ while 1:
     
     
     # заливаем главный фон черным цветом
-    mainScreen.fill(WHITE)
-    # mainScreen.blit(mainScreenColor, (0,0))
+    #mainScreen.fill(WHITE)
+    mainScreen.blit(mainScreenColor, (0,0))
 
     for i in range(len(map)):
         for j in range(len(map[i])):
