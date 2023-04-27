@@ -16,6 +16,8 @@ SPEED = 10
 changeX = 0
 changeX2 = 0
 
+FISH_SPEED = 5
+
 # настройки главного экрана
 WIDTH = 1920
 HEIGHT = 1080
@@ -48,7 +50,7 @@ manl = pygame.transform.flip(manl, True, False)
 
 man = manstand
 manrect = manr.get_rect()
-manrect.bottom = 1050
+manrect.bottom = 1010
 manrect.left = 50
 
 
@@ -60,10 +62,10 @@ manl2 = pygame.transform.flip(manl2, True, False)
 
 man2 = manstand2
 manrect2 = manr2.get_rect()
-manrect2.bottom = 1050
-manrect2.left = 1600
+manrect2.bottom = 1010
+manrect2.left = 1800
 
-platform = pygame.image.load('кирпич шоколадка small.png')
+platform = pygame.image.load('Sand.png')
 
 c = pygame.font.Font(None, 60)
 c2 = pygame.font.Font(None, 100)
@@ -322,15 +324,19 @@ while 1:
                     break
                 else:
                     print("Рыба в блоке")
-            coins.append(coinrect)
+            # coins.append(coinrect)
+            obj = { 
+                'rect': coinrect,
+                'move': FISH_SPEED
+            }
+            coins.append(obj)
                    
             
 
     #проверка столкновения блока еды и змеи
     for i in range(len(coins)):
-        if manrect.colliderect(coins[i]) == True:
+        if manrect.colliderect(coins[i]['rect']) == True:
             #foods = [ ]
-
             coins.pop(i)
             score += 1
             print("Количество набранных очков: " + str(score))
@@ -339,7 +345,7 @@ while 1:
             jumpMax == 30
     
     for i in range(len(coins)):
-        if manrect2.colliderect(coins[i]) == True:
+        if manrect2.colliderect(coins[i]['rect']) == True:
             #foods = [ ]
             coins.pop(i)
             score2 += 1
@@ -349,8 +355,13 @@ while 1:
             jumpMax == 30
     
     #рисуем блок еды
-    for coinrect in coins: 
-        mainScreen.blit(coinblock, coinrect)
+    for coinobj in coins: 
+        coinobj['rect'].x += coinobj['move']
+        if coinobj['rect'].collidelist(platforms) != -1:
+            coinobj['move'] = -1 * coinobj['move']
+            coinobj['rect'].x += coinobj['move']
+
+        mainScreen.blit(coinblock, coinobj['rect'])
 
     
     mainScreen.blit(man, manrect)
