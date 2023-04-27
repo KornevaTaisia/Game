@@ -22,7 +22,7 @@ FISH_SPEED = 5
 WIDTH = 1920
 HEIGHT = 1080
 mainScreen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
-mainScreenColor = pygame.image.load("fon2.png")
+mainScreenColor = pygame.image.load("fon.png")
 pygame.display.set_caption("Моя игра")
 
 # число кадров в секунду
@@ -70,11 +70,19 @@ platform = pygame.image.load('Sand.png')
 c = pygame.font.Font(None, 60)
 c2 = pygame.font.Font(None, 100)
 
-coinblock = pygame.image.load('f2.png')
-coinblock2 = pygame.image.load('f2.png')
+coinblockr = pygame.image.load('fr.png')
+coinblockr2 = pygame.image.load('fr.png')
 # platform = pygame.Surface((250, 100))
-coin = coinblock
-coin2 = coinblock2
+coin = coinblockr
+coin2 = coinblockr2
+
+
+coinblockl = pygame.image.load('fl.png')
+coinblockl2 = pygame.image.load('fl.png')
+# platform = pygame.Surface((250, 100))
+coin = coinblockl
+coin2 = coinblockl2
+
 # массив rect'ов для еды
 coins = [ ]
 coins2 = [ ]
@@ -128,13 +136,13 @@ while 1:
         if event.type == pygame.QUIT:
             sys.exit()
         if event.type == pygame.KEYDOWN:
-            if not jump and event.key == pygame.K_UP:
+            if not jump and event.key == pygame.K_w:
                 jump = True
                 jumpCount = jumpMax
                 onGround = False 
                 onPlatform = False
 
-            if not jump2 and event.key == pygame.K_w:
+            if not jump2 and event.key == pygame.K_UP:
                 jump2 = True
                 jumpCount2 = jumpMax2
                 onGround2 = False 
@@ -161,16 +169,17 @@ while 1:
 
     keys = pygame.key.get_pressed()
 
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_a]:
         changeX = -1 * SPEED
         man = manl
 
-    if keys[pygame.K_RIGHT]:
+    if keys[pygame.K_d]:
         changeX = SPEED
         man = manr
 
-    if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+    if not keys[pygame.K_a] and not keys[pygame.K_d]:
         changeX = 0
+        
         man = manstand
 
     if jump:
@@ -192,15 +201,15 @@ while 1:
 
 
 
-    if keys[pygame.K_a]:
+    if keys[pygame.K_LEFT]:
         changeX2 = -1 * SPEED
         man2 = manl2
 
-    if keys[pygame.K_d]:
+    if keys[pygame.K_RIGHT]:
         changeX2 = SPEED
         man2 = manr2
 
-    if not keys[pygame.K_a] and not keys[pygame.K_d]:
+    if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
         changeX2 = 0
         man2 = manstand2
 
@@ -316,7 +325,7 @@ while 1:
     #создание ректа блока еды
     if len(coins) == 0:
         for i in range(10):
-            coinrect = coinblock.get_rect()
+            coinrect = coinblockr.get_rect()
             while True:
                 coinrect.centerx = random.randint(50, WIDTH-50)
                 coinrect.centery = random.randint(50, HEIGHT-50)
@@ -327,6 +336,7 @@ while 1:
             # coins.append(coinrect)
             obj = { 
                 'rect': coinrect,
+                'surface': coinblockr.copy(),
                 'move': FISH_SPEED
             }
             coins.append(obj)
@@ -360,10 +370,16 @@ while 1:
         if coinobj['rect'].collidelist(platforms) != -1:
             coinobj['move'] = -1 * coinobj['move']
             coinobj['rect'].x += coinobj['move']
+            if coinobj['move'] > 0:
+                coinobj['surface'] = coinblockr.copy()
+            else:
+                coinobj['surface'] = coinblockl.copy()
+            
+        mainScreen.blit(coinobj['surface'], coinobj['rect'])
 
-        mainScreen.blit(coinblock, coinobj['rect'])
+    # coinl = coin.copy()
+    # coinl = pygame.transform.rotate(coinl, 0)
 
-    
     mainScreen.blit(man, manrect)
     sc_text = c.render('Собрано рыбок: ' + str(score), 1, RED)
     mainScreen.blit(sc_text, (0,0))
