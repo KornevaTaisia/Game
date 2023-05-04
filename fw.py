@@ -43,27 +43,33 @@ onPlatform2 = False
 
 # block2 = pygame.Surface((100, 100))
 manstand = pygame.image.load('c1_stand.png')
-manjump = pygame.image.load('c1_jump.png')
+manjumpr = pygame.image.load('c1_jump.png')
+manjumpl = manjumpr.copy()
+manjumpl = pygame.transform.flip(manjumpl, True, False)
 manr = pygame.image.load('c1_walk.png')
 manl = manr.copy()
 manl = pygame.transform.flip(manl, True, False)
 
+manjump = manjumpr
 man = manstand
 manrect = manr.get_rect()
-manrect.bottom = 1010
-manrect.left = 50
+manrect.bottom = HEIGHT - 40
+manrect.left = 40
 
 
 manstand2 = pygame.image.load('c1_stand.png')
-manjump2 = pygame.image.load('c1_jump.png')
+manjump2r = pygame.image.load('c1_jump.png')
+manjump2l = manjump2r.copy()
+manjump2l = pygame.transform.flip(manjump2l, True, False)
 manr2 = pygame.image.load('c1_walk.png')
 manl2 = manr2.copy()
 manl2 = pygame.transform.flip(manl2, True, False)
 
+manjump2 = manjump2r
 man2 = manstand2
 manrect2 = manr2.get_rect()
-manrect2.bottom = 1010
-manrect2.left = 1800
+manrect2.bottom = HEIGHT - 40
+manrect2.right = WIDTH - 40
 
 platform = pygame.image.load('Sand.png')
 
@@ -172,14 +178,15 @@ while 1:
     if keys[pygame.K_a]:
         changeX = -1 * SPEED
         man = manl
+        manjump = manjumpl
 
     if keys[pygame.K_d]:
         changeX = SPEED
         man = manr
+        manjump = manjumpr
 
     if not keys[pygame.K_a] and not keys[pygame.K_d]:
         changeX = 0
-        
         man = manstand
 
     if jump:
@@ -204,10 +211,12 @@ while 1:
     if keys[pygame.K_LEFT]:
         changeX2 = -1 * SPEED
         man2 = manl2
+        manjump2 = manjump2l
 
     if keys[pygame.K_RIGHT]:
         changeX2 = SPEED
         man2 = manr2
+        manjump2 = manjump2r
 
     if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
         changeX2 = 0
