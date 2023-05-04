@@ -71,7 +71,7 @@ manrect2 = manr2.get_rect()
 manrect2.bottom = HEIGHT - 40
 manrect2.right = WIDTH - 40
 
-platform = pygame.image.load('Sand.png')
+platform = pygame.image.load('sea.png')
 
 c = pygame.font.Font(None, 60)
 c2 = pygame.font.Font(None, 100)
